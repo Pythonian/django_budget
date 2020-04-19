@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}{{ instance }}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>{{ instance }}</h1>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card my-4 py-4 pl-4">
+                <h4 class="card-title">Total Budget</h4>
+                <p class="card-text h1">${{ instance.budget }}</p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card my-4 py-4 pl-4">
+                <h4 class="card-title">Budget Left</h4>
+                <p
+                    class="card-text h1 {% if instance.budget_left > 0 %}text-success{% elif instance.budget_left == 0 %}text-muted{% else %}text-danger{% endif %}">
+                    ${{ instance.budget_left }}</p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card my-4 py-4 pl-4">
+                <h4 class="card-title">Total Transactions</h4>
+                <p class="card-text h1">{{ instance.total_transactions }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button data-toggle="modal" data-target="#expenseModal" class="btn btn-success text-white float-right">Add
+                Expense</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <table class="table mt-4">
+            {% for expense in expense_list %}
+            <tr>
+                <td>{{ expense.title }}</td>
+                <td>${{ expense.amount }}</td>
+                <td>{{ expense.category.name }}</td>
+                <td><a data-id="{{ expense.id }}" onclick="deleteExpense(this)" href=""
+                        class="float-right text-danger"><i class="fa fa-times"></i></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+<div class="modal fade" tabindex="-1" id="expenseModal">
+    <div class="modal-dialog modal-lg" role="dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Expense</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <label for="title">Title</label>
+                    <input type="text" name="title" id="title">
+
+                    <label for="amount">Amount</label>
+                    <input type="text" name="amount" id="amount">
+
+                    <select name="category">
+                        {% for category in categories %}
+                        <option>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteExpense(e) {
+        let id = e.dataset.id
+        e.closest('tr').remove()
+
+        fetch('', {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'id': id
+            }),
+            credentials: "same-origin",
+        })
+    }
+</script>
+
+{% endblock %}

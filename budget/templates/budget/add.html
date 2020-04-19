@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <label for="categoryInput">Expense Categories (hit enter after every category)</label>
+            <input type="text" name="categoryInput" id="categoryInput">
+            <!-- hidden input to concatenate all the categories a user enter and puts a comma between them -->
+            <input type="hidden" name="categoriesString">
+            <!-- A list of all categories a user enters -->
+            <ul id="categoriesContainer" class="pl-0">
+                
+            </ul>
+            <button type="submit" class="btn btn-success">Start Project</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}My Budgets{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>My Budgets</h1>
+    <hr>
+
+    <div class="row">
+        {% for budget in budget_list %}
+        <div class="col">
+            <h3>{{ budget.name }}</h3>
+            <a href="{% url 'detail' budget.slug %}">Detail</a>
+        </div>
+        {% empty %}
+        <div class="col text-center border border-danger py-4 my-4">
+            <h3 class="text-secondary">Sorry, you do not have any project yet.</h3>
+            <a href="" class="btn btn-large btn-success"><i class="fa fa-plus"></i> Add Project</a>
+        </div>
+        {% endfor %}
+    </div>
+
+
+
+    <div class="row">
+
+    </div>
+</div>
+
+{% endblock %}
